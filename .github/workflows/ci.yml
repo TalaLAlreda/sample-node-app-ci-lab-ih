@@ -42,7 +42,14 @@ jobs:
 
      - name: Build (optional)
        run: npm run build 2>/dev/null || echo "No build step; continuing."
-
+     - name: Print safe fields from AZURE_CREDENTIALS
+       run: |
+         echo "$AZURE_CREDENTIALS" > creds.json
+         echo "clientId: $(jq -r '.clientId' creds.json)"
+         echo "tenantId: $(jq -r '.tenantId' creds.json)"
+         echo "subscriptionId: $(jq -r '.subscriptionId' creds.json)"
+       env:
+         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
      - name: Azure login (client secret)
        uses: azure/login@v2
        with:
